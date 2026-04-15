@@ -118,7 +118,8 @@ public class Main {
     public List<Agendamento> listarAgendamentos() { return agendamentoRepo.findAll(); }
 }
 
-@Entity public class Perfil {
+@Entity
+class Perfil {
     @Id private String uid;
     private String nome, email;
     public Perfil() {}
@@ -130,7 +131,8 @@ public class Main {
     public void setEmail(String email) { this.email = email; }
 }
 
-@Entity public class Veiculo {
+@Entity
+class Veiculo {
     @Id private String placa;
     private String modelo, ano;
     public Veiculo() {}
@@ -142,7 +144,8 @@ public class Main {
     public void setAno(String ano) { this.ano = ano; }
 }
 
-@Entity public class Oficina {
+@Entity
+class Oficina {
     @Id private String id;
     private String nome, localidade, senha;
     @ElementCollection private List<String> mecanicos, servicos, horarios;
@@ -163,7 +166,8 @@ public class Main {
     public void setHorarios(List<String> horarios) { this.horarios = horarios; }
 }
 
-@Entity public class Agendamento {
+@Entity
+class Agendamento {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String userId, oficinaId, servico, mecanico, horario;
