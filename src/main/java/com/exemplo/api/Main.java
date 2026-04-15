@@ -21,7 +21,7 @@ import java.util.Map;
 @SpringBootApplication
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/api")
+// REMOVI O @RequestMapping("/api") DAQUI POIS JA ESTA NO application.properties
 public class Main {
 
     public static void main(String[] args) {
