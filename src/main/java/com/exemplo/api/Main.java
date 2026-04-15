@@ -28,10 +28,19 @@ public class Main {
         SpringApplication.run(Main.class, args);
     }
 
-    @Autowired private PerfilRepository perfilRepo;
-    @Autowired private VeiculoRepository veiculoRepo;
-    @Autowired private AgendamentoRepo agendamentoRepo;
-    @Autowired private OficinaRepository oficinaRepo;
+    private final PerfilRepository perfilRepo;
+    private final VeiculoRepository veiculoRepo;
+    private final AgendamentoRepo agendamentoRepo;
+    private final OficinaRepository oficinaRepo;
+
+    @Autowired
+    public Main(PerfilRepository perfilRepo, VeiculoRepository veiculoRepo, 
+                AgendamentoRepo agendamentoRepo, OficinaRepository oficinaRepo) {
+        this.perfilRepo = perfilRepo;
+        this.veiculoRepo = veiculoRepo;
+        this.agendamentoRepo = agendamentoRepo;
+        this.oficinaRepo = oficinaRepo;
+    }
 
     @PostMapping("/auth/google")
     public ResponseEntity<?> autenticarGoogle(@RequestBody Map<String, String> body) {
@@ -79,6 +88,11 @@ public class Main {
     @GetMapping("/veiculos")
     public List<Veiculo> listarVeiculos() { return veiculoRepo.findAll(); }
 
+    @PostMapping("/oficinas")
+    public ResponseEntity<Oficina> cadastrarOficina(@RequestBody Oficina oficina) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(oficinaRepo.save(oficina));
+    }
+
     @PutMapping("/oficinas/{id}")
     public ResponseEntity<Oficina> atualizarOficina(@PathVariable String id, @RequestBody Oficina novosDados) {
         return oficinaRepo.findById(id).map(oficina -> {
@@ -90,11 +104,6 @@ public class Main {
             if (novosDados.getHorarios() != null) oficina.setHorarios(novosDados.getHorarios());
             return ResponseEntity.ok(oficinaRepo.save(oficina));
         }).orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/oficinas")
-    public ResponseEntity<Oficina> cadastrarOficina(@RequestBody Oficina oficina) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(oficinaRepo.save(oficina));
     }
 
     @GetMapping("/oficinas")
@@ -109,10 +118,9 @@ public class Main {
     public List<Agendamento> listarAgendamentos() { return agendamentoRepo.findAll(); }
 }
 
-@Entity class Perfil {
+@Entity public class Perfil {
     @Id private String uid;
-    private String nome;
-    @Column(unique = true) private String email;
+    private String nome, email;
     public Perfil() {}
     public String getUid() { return uid; }
     public void setUid(String uid) { this.uid = uid; }
@@ -122,7 +130,7 @@ public class Main {
     public void setEmail(String email) { this.email = email; }
 }
 
-@Entity class Veiculo {
+@Entity public class Veiculo {
     @Id private String placa;
     private String modelo, ano;
     public Veiculo() {}
@@ -134,7 +142,7 @@ public class Main {
     public void setAno(String ano) { this.ano = ano; }
 }
 
-@Entity class Oficina {
+@Entity public class Oficina {
     @Id private String id;
     private String nome, localidade, senha;
     @ElementCollection private List<String> mecanicos, servicos, horarios;
@@ -155,12 +163,13 @@ public class Main {
     public void setHorarios(List<String> horarios) { this.horarios = horarios; }
 }
 
-@Entity class Agendamento {
+@Entity public class Agendamento {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String userId, oficinaId, servico, mecanico, horario;
     public Agendamento() {}
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
     public String getOficinaId() { return oficinaId; }
