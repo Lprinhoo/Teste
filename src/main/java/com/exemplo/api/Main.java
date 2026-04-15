@@ -21,7 +21,6 @@ import java.util.Map;
 @SpringBootApplication
 @RestController
 @CrossOrigin(origins = "*")
-// REMOVI O @RequestMapping("/api") DAQUI POIS JA ESTA NO application.properties
 public class Main {
 
     public static void main(String[] args) {
@@ -42,7 +41,13 @@ public class Main {
         this.oficinaRepo = oficinaRepo;
     }
 
-    @PostMapping("/auth/google")
+    // Rota de Teste Principal (Verifica se a API está viva)
+    @GetMapping("/")
+    public String home() {
+        return "API de Oficinas Online no Railway!";
+    }
+
+    @PostMapping("/api/auth/google")
     public ResponseEntity<?> autenticarGoogle(@RequestBody Map<String, String> body) {
         try {
             String idTokenString = body.get("idToken");
@@ -70,30 +75,30 @@ public class Main {
         }
     }
 
-    @PostMapping("/perfis")
+    @PostMapping("/api/perfis")
     public ResponseEntity<Perfil> salvarPerfil(@RequestBody Perfil perfil) {
         return ResponseEntity.status(HttpStatus.CREATED).body(perfilRepo.save(perfil));
     }
 
-    @GetMapping("/perfis/email/{email}")
+    @GetMapping("/api/perfis/email/{email}")
     public ResponseEntity<Perfil> buscarPorEmail(@PathVariable String email) {
         return perfilRepo.findByEmail(email).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/veiculos")
+    @PostMapping("/api/veiculos")
     public ResponseEntity<Veiculo> salvarVeiculo(@RequestBody Veiculo veiculo) {
         return ResponseEntity.status(HttpStatus.CREATED).body(veiculoRepo.save(veiculo));
     }
 
-    @GetMapping("/veiculos")
+    @GetMapping("/api/veiculos")
     public List<Veiculo> listarVeiculos() { return veiculoRepo.findAll(); }
 
-    @PostMapping("/oficinas")
+    @PostMapping("/api/oficinas")
     public ResponseEntity<Oficina> cadastrarOficina(@RequestBody Oficina oficina) {
         return ResponseEntity.status(HttpStatus.CREATED).body(oficinaRepo.save(oficina));
     }
 
-    @PutMapping("/oficinas/{id}")
+    @PutMapping("/api/oficinas/{id}")
     public ResponseEntity<Oficina> atualizarOficina(@PathVariable String id, @RequestBody Oficina novosDados) {
         return oficinaRepo.findById(id).map(oficina -> {
             oficina.setNome(novosDados.getNome());
@@ -106,15 +111,15 @@ public class Main {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/oficinas")
+    @GetMapping("/api/oficinas")
     public List<Oficina> listarOficinas() { return oficinaRepo.findAll(); }
 
-    @PostMapping("/agendamentos")
+    @PostMapping("/api/agendamentos")
     public ResponseEntity<Agendamento> agendar(@RequestBody Agendamento agendamento) {
         return ResponseEntity.status(HttpStatus.CREATED).body(agendamentoRepo.save(agendamento));
     }
 
-    @GetMapping("/agendamentos")
+    @GetMapping("/api/agendamentos")
     public List<Agendamento> listarAgendamentos() { return agendamentoRepo.findAll(); }
 }
 
