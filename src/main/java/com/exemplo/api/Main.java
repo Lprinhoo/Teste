@@ -44,19 +44,28 @@ class Veiculo {
 
 @Entity
 class Oficina {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private String id; // Agora gera UUID automaticamente
-    private String nome, localidade, senha;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // Voltou para Long numérico
+    private String nome, localidade, senha, endereco;
+    private Double latitude, longitude;
+    
     @ElementCollection private List<String> mecanicos, servicos, horarios;
+
     public Oficina() {}
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
     public String getLocalidade() { return localidade; }
     public void setLocalidade(String localidade) { this.localidade = localidade; }
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+    public String getEndereco() { return endereco; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
     public List<String> getMecanicos() { return mecanicos; }
     public void setMecanicos(List<String> mecanicos) { this.mecanicos = mecanicos; }
     public List<String> getServicos() { return servicos; }
@@ -69,14 +78,16 @@ class Oficina {
 class Agendamento {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String userId, oficinaId, servico, mecanico, horario;
+    private String userId, servico, mecanico, horario;
+    private Long oficinaId; // Mudou para Long
+
     public Agendamento() {}
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
-    public String getOficinaId() { return oficinaId; }
-    public void setOficinaId(String oficinaId) { this.oficinaId = oficinaId; }
+    public Long getOficinaId() { return oficinaId; }
+    public void setOficinaId(Long oficinaId) { this.oficinaId = oficinaId; }
     public String getServico() { return servico; }
     public void setServico(String servico) { this.servico = servico; }
     public String getMecanico() { return mecanico; }
@@ -91,4 +102,4 @@ interface PerfilRepository extends JpaRepository<Perfil, String> {
 }
 interface VeiculoRepository extends JpaRepository<Veiculo, String> {}
 interface AgendamentoRepo extends JpaRepository<Agendamento, Long> {}
-interface OficinaRepository extends JpaRepository<Oficina, String> {}
+interface OficinaRepository extends JpaRepository<Oficina, Long> {} // Mudou para Long

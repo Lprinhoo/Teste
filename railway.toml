@@ -3,5 +3,4 @@ builder = "nixpacks"
 
 [deploy]
 startCommand = "java -jar target/Teste-1.0-SNAPSHOT.jar"
-healthcheckPath = "/actuator/health"
 restartPolicyType = "on_failure"

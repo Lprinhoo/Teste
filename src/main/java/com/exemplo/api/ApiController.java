@@ -90,11 +90,14 @@ public class ApiController {
     }
 
     @PutMapping("/oficinas/{id}")
-    public ResponseEntity<Oficina> atualizarOficina(@PathVariable String id, @RequestBody Oficina novosDados) {
+    public ResponseEntity<Oficina> atualizarOficina(@PathVariable Long id, @RequestBody Oficina novosDados) {
         return oficinaRepo.findById(id).map(oficina -> {
             oficina.setNome(novosDados.getNome());
             oficina.setLocalidade(novosDados.getLocalidade());
             oficina.setSenha(novosDados.getSenha());
+            oficina.setEndereco(novosDados.getEndereco());
+            oficina.setLatitude(novosDados.getLatitude());
+            oficina.setLongitude(novosDados.getLongitude());
             if (novosDados.getMecanicos() != null) oficina.setMecanicos(novosDados.getMecanicos());
             if (novosDados.getServicos() != null) oficina.setServicos(novosDados.getServicos());
             if (novosDados.getHorarios() != null) oficina.setHorarios(novosDados.getHorarios());
