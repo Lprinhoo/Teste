@@ -12,7 +12,6 @@ import java.util.List;
 @SpringBootApplication
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/mensagem")
 public class Main {
 
     public static void main(String[] args) {
@@ -25,12 +24,18 @@ public class Main {
         this.repo = repo;
     }
 
-    @PostMapping
+    // ENDPOINT DE SAUDE MANUAL (Para o Railway saber que estamos vivos)
+    @GetMapping("/health")
+    public String health() {
+        return "UP";
+    }
+
+    @PostMapping("/mensagem")
     public ResponseEntity<Mensagem> salvar(@RequestBody Mensagem mensagem) {
         return ResponseEntity.status(HttpStatus.CREATED).body(repo.save(mensagem));
     }
 
-    @GetMapping
+    @GetMapping("/mensagem")
     public List<Mensagem> listar() {
         return repo.findAll();
     }
