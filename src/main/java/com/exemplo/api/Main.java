@@ -3,103 +3,51 @@ package com.exemplo.api;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import jakarta.persistence.*;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootApplication
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/mensagem")
 public class Main {
+
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
-}
 
-// --- ENTIDADES ---
+    private final MensagemRepository repo;
 
-@Entity
-class Perfil {
-    @Id private String uid;
-    private String nome, email;
-    public Perfil() {}
-    public String getUid() { return uid; }
-    public void setUid(String uid) { this.uid = uid; }
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-}
+    public Main(MensagemRepository repo) {
+        this.repo = repo;
+    }
 
-@Entity
-class Veiculo {
-    @Id private String placa;
-    private String modelo, ano;
-    public Veiculo() {}
-    public String getPlaca() { return placa; }
-    public void setPlaca(String placa) { this.placa = placa; }
-    public String getModelo() { return modelo; }
-    public void setModelo(String modelo) { this.modelo = modelo; }
-    public String getAno() { return ano; }
-    public void setAno(String ano) { this.ano = ano; }
+    @PostMapping
+    public ResponseEntity<Mensagem> salvar(@RequestBody Mensagem mensagem) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(repo.save(mensagem));
+    }
+
+    @GetMapping
+    public List<Mensagem> listar() {
+        return repo.findAll();
+    }
 }
 
 @Entity
-class Oficina {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Voltou para Long numérico
-    private String nome, localidade, senha, endereco;
-    private Double latitude, longitude;
-    
-    @ElementCollection private List<String> mecanicos, servicos, horarios;
-
-    public Oficina() {}
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-    public String getLocalidade() { return localidade; }
-    public void setLocalidade(String localidade) { this.localidade = localidade; }
-    public String getSenha() { return senha; }
-    public void setSenha(String senha) { this.senha = senha; }
-    public String getEndereco() { return endereco; }
-    public void setEndereco(String endereco) { this.endereco = endereco; }
-    public Double getLatitude() { return latitude; }
-    public void setLatitude(Double latitude) { this.latitude = latitude; }
-    public Double getLongitude() { return longitude; }
-    public void setLongitude(Double longitude) { this.longitude = longitude; }
-    public List<String> getMecanicos() { return mecanicos; }
-    public void setMecanicos(List<String> mecanicos) { this.mecanicos = mecanicos; }
-    public List<String> getServicos() { return servicos; }
-    public void setServicos(List<String> servicos) { this.servicos = servicos; }
-    public List<String> getHorarios() { return horarios; }
-    public void setHorarios(List<String> horarios) { this.horarios = horarios; }
-}
-
-@Entity
-class Agendamento {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+class Mensagem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String userId, servico, mecanico, horario;
-    private Long oficinaId; // Mudou para Long
+    private String conteudo;
 
-    public Agendamento() {}
+    public Mensagem() {}
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
-    public Long getOficinaId() { return oficinaId; }
-    public void setOficinaId(Long oficinaId) { this.oficinaId = oficinaId; }
-    public String getServico() { return servico; }
-    public void setServico(String servico) { this.servico = servico; }
-    public String getMecanico() { return mecanico; }
-    public void setMecanico(String mecanico) { this.mecanico = mecanico; }
-    public String getHorario() { return horario; }
-    public void setHorario(String horario) { this.horario = horario; }
+    public String getConteudo() { return conteudo; }
+    public void setConteudo(String conteudo) { this.conteudo = conteudo; }
 }
 
-// --- REPOSITÓRIOS ---
-interface PerfilRepository extends JpaRepository<Perfil, String> {
-    Optional<Perfil> findByEmail(String email);
-}
-interface VeiculoRepository extends JpaRepository<Veiculo, String> {}
-interface AgendamentoRepo extends JpaRepository<Agendamento, Long> {}
-interface OficinaRepository extends JpaRepository<Oficina, Long> {} // Mudou para Long
+interface MensagemRepository extends JpaRepository<Mensagem, Long> {}
